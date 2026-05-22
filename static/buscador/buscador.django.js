@@ -2970,7 +2970,7 @@ g.parseInline;
 b.parse;
 x.lex;
 const FETCH_TIMEOUT_MS = 6e4;
-const FEEDBACK_MAP = { like: "GOOD", dislike: "BAD" };
+const FEEDBACK_MAP = { like: "GOOD", dislike: "BAD", copy: "COPY", share: "SHARE" };
 const SHARE_SUBJECT = "Resposta do Assistente Poupatempo";
 const _mdRenderer = new g.Renderer();
 _mdRenderer.link = ({ href, title, text }) => `<a href="${href}" target="_blank" rel="noopener noreferrer"${title ? ` title="${title}"` : ""}>${text}</a>`;
@@ -3192,6 +3192,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
       const m2 = { ...msg };
       if (action === "copy") {
         (_a2 = navigator.clipboard) == null ? void 0 : _a2.writeText(msg.text);
+        this._sendFeedback(msg.feedbackId, "copy", msg.text);
         m2.copyBtnClass = "buscador-action-btn buscador-action-btn--copied";
         this._showCopiedToast = true;
         this._pendingTimers.push(setTimeout(() => {
@@ -3205,16 +3206,17 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
         m2.actionDisliked = false;
         m2.likeBtnClass = cls(m2.actionLiked);
         m2.dislikeBtnClass = cls(false);
-        if (m2.actionLiked) this._sendFeedback(msg.feedbackId, "like");
+        if (m2.actionLiked) this._sendFeedback(msg.feedbackId, "like", msg.text);
       } else if (action === "dislike") {
         m2.actionDisliked = !msg.actionDisliked;
         m2.actionLiked = false;
         m2.dislikeBtnClass = cls(m2.actionDisliked);
         m2.likeBtnClass = cls(false);
-        if (m2.actionDisliked) this._sendFeedback(msg.feedbackId, "dislike");
+        if (m2.actionDisliked) this._sendFeedback(msg.feedbackId, "dislike", msg.text);
       } else if (action === "share") {
         m2.actionShared = true;
         m2.shareBtnClass = cls(true);
+        this._sendFeedback(msg.feedbackId, "share", msg.text);
         this._shareMessage(msg.text);
         this._pendingTimers.push(setTimeout(() => {
           this._messages = this._messages.map(
@@ -3298,11 +3300,11 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this._isTimeoutError = raw.includes("demorou mais que o esperado");
     this._errorMessage = this._isSessionError(error) ? "Não foi possível retomar a conversa. Por favor, feche e tente novamente." : raw;
   }
-  _sendFeedback(feedbackId, action) {
+  _sendFeedback(feedbackId, action, text = null) {
     if (!feedbackId || !this._sessionId) return;
     const feedback = FEEDBACK_MAP[action];
     if (!feedback) return;
-    this._sfPost({ action: "sendFeedback", sessionId: this._sessionId, feedbackId, feedback, text: null }).catch(() => {
+    this._sfPost({ action: "sendFeedback", sessionId: this._sessionId, feedbackId, feedback, text }).catch(() => {
     });
   }
   handleRelatedQuestion(event) {
@@ -3312,18 +3314,21 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this.handleFollowUp();
   }
   _updateRelatedQuestions(text) {
-    const lines = (text || "").split("\n");
-    const idx = lines.findIndex((l4) => /perguntas?\s+relacionadas?/i.test(l4));
-    if (idx === -1) {
-      this._relatedQuestions = [];
-      return;
+    const lines = (responseText || "").split("\n");
+    const found = [];
+    let inBlock = false;
+    for (const line of lines) {
+      if (/pergunta[s]?\s+relacionada[s]?/i.test(line)) {
+        inBlock = true;
+        continue;
+      }
+      if (inBlock) {
+        const clean = line.replace(/^[-*\d.)\s]+/, "").replace(/\??\s*$/, "").trim();
+        if (clean.length > 5) found.push(clean + "?");
+        if (found.length >= 5) break;
+      }
     }
-    const qs = [];
-    for (let i3 = idx + 1; i3 < lines.length && qs.length < 5; i3++) {
-      const clean = lines[i3].replace(/^[\s\-*\d.]+/, "").trim();
-      if (clean.length > 4) qs.push({ id: `rq-${i3}`, label: clean });
-    }
-    this._relatedQuestions = qs;
+    this._relatedQuestions = found.slice(0, 5).map((label, i3) => ({ id: `rq-${this.msgCounter}-${i3}`, label }));
   }
   async _shareMessage(text) {
     const strategies = [
