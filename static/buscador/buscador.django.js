@@ -3313,7 +3313,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this._followUpQuery = label;
     this.handleFollowUp();
   }
-  _updateRelatedQuestions(text) {
+  _updateRelatedQuestions(responseText) {
     const lines = (responseText || "").split("\n");
     const found = [];
     let inBlock = false;
