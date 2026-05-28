@@ -3303,7 +3303,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this._errorMessage = this._isSessionError(error) ? "Não foi possível retomar a conversa. Por favor, feche e tente novamente." : raw;
   }
   _sendFeedback(feedbackId, action, text = null) {
-    if (!feedbackId || !this._sessionId) return;
+    if (!this._sessionId) return;
     const feedback = FEEDBACK_MAP[action];
     if (!feedback) return;
     this._sfPost({ action: "sendFeedback", sessionId: this._sessionId, feedbackId, feedback, text }).catch(() => {
