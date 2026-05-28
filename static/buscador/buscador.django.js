@@ -1034,7 +1034,6 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     }));
   }
   _sendFeedback(feedbackId, action, text = null) {
-    if (!this._sessionId) return;
     const feedback = FEEDBACK_MAP[action];
     if (!feedback) return;
     this._sfPost({ action: "sendFeedback", sessionId: this._sessionId, feedbackId, feedback, text }).catch(() => {
