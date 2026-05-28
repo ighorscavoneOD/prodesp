@@ -1018,7 +1018,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
   // ─── Event handlers ───────────────────────────────────────────────────────
   handleSimEncontrei() {
     this._simEncontreiFeedback = true;
-    this._sendFeedback('FOUND');
+    this._sendFeedback(null, 'FOUND', this._searchTermValue);
     this.dispatchEvent(new CustomEvent("found", {
       bubbles: true,
       composed: true,
@@ -1026,16 +1026,12 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     }));
   }
   handleNaoEncontrei() {
-    this._sendFeedback('NOT_FOUND');
+   this._sendFeedback(null, 'NOT_FOUND', this._searchTermValue);
     this.dispatchEvent(new CustomEvent("notfound", {
       bubbles: true,
       composed: true,
       detail: { searchTerm: this._searchTermValue }
     }));
-  }
-  _sendFeedback(feedback) {
-    sendFeedback({ sessionId: null, feedbackId: null, feedback, text: this._searchTermValue })
-    .catch(() => {});
   }
   goToPage(event) {
     const page = parseInt(event.currentTarget.dataset.page, 10);
