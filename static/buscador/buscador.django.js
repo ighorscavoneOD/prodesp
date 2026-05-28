@@ -2979,7 +2979,7 @@ g.parseInline;
 b.parse;
 x.lex;
 const FETCH_TIMEOUT_MS = 6e4;
-const FEEDBACK_MAP = { like: "GOOD", dislike: "BAD", copy: "COPY", share: "SHARE" };
+const FEEDBACK_MAP = { like: "GOOD", dislike: "BAD", copy: "COPY", share: "SHARE", FOUND: "FOUND", "NOT_FOUND": "NOT_FOUND"};
 const SHARE_SUBJECT = "Resposta do Assistente Poupatempo";
 const _mdRenderer = new g.Renderer();
 _mdRenderer.link = ({ href, title, text }) => `<a href="${href}" target="_blank" rel="noopener noreferrer"${title ? ` title="${title}"` : ""}>${text}</a>`;
