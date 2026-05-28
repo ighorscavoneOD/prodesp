@@ -1033,6 +1033,10 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       detail: { searchTerm: this._searchTermValue }
     }));
   }
+  _sendFeedback(feedback) {
+    sendFeedback({ sessionId: null, feedbackId: null, feedback, text: this._searchTermValue })
+    .catch(() => {});
+  }
   goToPage(event) {
     const page = parseInt(event.currentTarget.dataset.page, 10);
     if (page && page !== this._currentPage) {
