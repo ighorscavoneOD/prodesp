@@ -1039,6 +1039,31 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     this._sfPost({ action: "sendFeedback", sessionId: this._sessionId, feedbackId, feedback, text }).catch(() => {
     });
   }
+  async _sfPost(body) {
+    const headers = { "Content-Type": "application/json" };
+    if (this.sfInstanceUrl) headers["sf-instance-url"] = this.sfInstanceUrl;
+    if (this.sfClientId) headers["sf-client-id"] = this.sfClientId;
+    if (this.sfClientSecret) headers["sf-client-secret"] = this.sfClientSecret;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${this.apiBaseUrl}/buscadorAgentforce/`, {
+        method: "POST",
+        headers,
+        signal: controller.signal,
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    } catch (err) {
+      if (err.name === "AbortError") {
+        throw new Error("A resposta demorou mais que o esperado. Tente enviar sua mensagem novamente.");
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
   goToPage(event) {
     const page = parseInt(event.currentTarget.dataset.page, 10);
     if (page && page !== this._currentPage) {
