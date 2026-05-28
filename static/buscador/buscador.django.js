@@ -1047,6 +1047,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
+      this.apiBaseUrl = "/api";
       const res = await fetch(`${this.apiBaseUrl}/buscadorAgentforce/`, {
         method: "POST",
         headers,
