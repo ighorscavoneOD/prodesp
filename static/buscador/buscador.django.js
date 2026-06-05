@@ -1143,8 +1143,20 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   async _fetchServices(term, signal) {
-    const baseUrl = window.location.origin;
-    console.log("baseUrl: ", baseUrl);
+    const baseUrlPoupatempo = window.location.origin;
+    var baseUrlForLink;
+    if(baseUrlPoupatempo.includes("https://poupatempo.sp.gov.br")){ //PROD URL
+      baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
+    }
+    else if(baseUrlPoupatempo.includes("https://poupatemponovo.homologacao.sp.gov.br")){
+      baseUrlForLink = "https://poupatemponovo.homologacao.sp.gov.br/carta/";
+    }
+    else if(baseUrlPoupatempo.includes("https://poupatemponovo.des.sp.gov.br")){
+      baseUrlForLink = "https://poupatemponovo.des.sp.gov.br/carta";
+    }
+    else{
+       baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
+    }
     const url = `${this.searchApiUrl}?pergunta=${encodeURIComponent(term)}`;
     const headers = { "Content-Type": "application/json" };
     if (this.orquestradorApiUrl) headers["x-orquestrador-api-url"] = this.orquestradorApiUrl;
@@ -1162,7 +1174,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       const title = (item == null ? void 0 : item.name) || "";
       const description = ((_a2 = item == null ? void 0 : item.detalhes) == null ? void 0 : _a2.servico) || "";
       const tipoServico = (_b2 = item == null ? void 0 : item.detalhes) == null ? void 0 : _b2.tipoServico;
-      const link = "https://poupatempo.sp.gov.br/carta/" + ((_c = item == null ? void 0 : item.detalhes) == null ? void 0 : _c.idServico) || "#";
+      const link = baseUrlForLink + ((_c = item == null ? void 0 : item.detalhes) == null ? void 0 : _c.idServico) || "#";
       const orgao = (item == null ? void 0 : item.orgao) || ((_d = item == null ? void 0 : item.detalhes) == null ? void 0 : _d.orgao) || "";
       return { id, title, orgao, description, tags: tipoServico ? [tipoServico] : [], link };
     });
