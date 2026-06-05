@@ -1157,6 +1157,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     else{
        baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
     }
+    console.log("baseUrl: ", baseUrlForLink);
     const url = `${this.searchApiUrl}?pergunta=${encodeURIComponent(term)}`;
     const headers = { "Content-Type": "application/json" };
     if (this.orquestradorApiUrl) headers["x-orquestrador-api-url"] = this.orquestradorApiUrl;
