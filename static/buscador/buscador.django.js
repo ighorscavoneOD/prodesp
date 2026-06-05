@@ -1143,6 +1143,8 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   async _fetchServices(term, signal) {
+    consta baseUrl = window.location.origin;
+    console.log("baseUrl: ", baseUrl);
     const url = `${this.searchApiUrl}?pergunta=${encodeURIComponent(term)}`;
     const headers = { "Content-Type": "application/json" };
     if (this.orquestradorApiUrl) headers["x-orquestrador-api-url"] = this.orquestradorApiUrl;
