@@ -1152,7 +1152,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       baseUrlForLink = "https://poupatemponovo.homologacao.sp.gov.br/carta/";
     }
     else if(baseUrlPoupatempo.includes("https://poupatemponovo.des.sp.gov.br")){
-      baseUrlForLink = "https://poupatemponovo.des.sp.gov.br/carta";
+      baseUrlForLink = "https://poupatemponovo.des.sp.gov.br/carta/";
     }
     else{
        baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
