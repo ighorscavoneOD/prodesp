@@ -1175,7 +1175,8 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       const title = (item == null ? void 0 : item.name) || "";
       const description = ((_a2 = item == null ? void 0 : item.detalhes) == null ? void 0 : _a2.servico) || "";
       const tipoServico = (_b2 = item == null ? void 0 : item.detalhes) == null ? void 0 : _b2.tipoServico;
-      const link = baseUrlForLink + ((_c = item == null ? void 0 : item.detalhes) == null ? void 0 : _c.idServico) || "#";
+      //const link = baseUrlForLink + ((_c = item == null ? void 0 : item.detalhes) == null ? void 0 : _c.idServico) || "#";
+      const link = baseUrlForLink + ((_c = item == null ? void 0 : item.detalhes) == null ? void 0 : _c.idServico) + "?source=busca" || "#";
       const orgao = (item == null ? void 0 : item.orgao) || ((_d = item == null ? void 0 : item.detalhes) == null ? void 0 : _d.orgao) || "";
       return { id, title, orgao, description, tags: tipoServico ? [tipoServico] : [], link };
     });
