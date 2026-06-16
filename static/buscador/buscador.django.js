@@ -1155,7 +1155,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       baseUrlForLink = "https://poupatemponovo.des.sp.gov.br/carta/";
     }
     else{
-       baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
+       baseUrlForLink = "https://poupatemponovo.homologacao.sp.gov.br/carta/";
     }
     console.log("baseUrl: ", baseUrlForLink);
     const url = `${this.searchApiUrl}?pergunta=${encodeURIComponent(term)}`;
