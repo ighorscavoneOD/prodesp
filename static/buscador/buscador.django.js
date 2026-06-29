@@ -1146,7 +1146,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
     const baseUrlPoupatempo = window.location.origin;
     var baseUrlForLink;
     if(baseUrlPoupatempo.includes("https://poupatempo.sp.gov.br")){ //PROD URL
-      baseUrlForLink = "https://poupatempo.sp.gov.br/carta/";
+      baseUrlForLink = "https://www.poupatempo.sp.gov.br/carta/";
     }
     else if(baseUrlPoupatempo.includes("https://poupatemponovo.homologacao.sp.gov.br")){
       baseUrlForLink = "https://poupatemponovo.homologacao.sp.gov.br/carta/";
