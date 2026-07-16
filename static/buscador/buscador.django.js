@@ -4139,7 +4139,9 @@ __publicField(_PtBuscadorAgentforce, "properties", {
 });
 let PtBuscadorAgentforce = _PtBuscadorAgentforce;
 customElements.define("pt-buscador-agentforce", PtBuscadorAgentforce);
-document.addEventListener("DOMContentLoaded", () => {
+// Init robusto: se o módulo for carregado após o DOMContentLoaded (script
+// dinâmico/async), o listener nunca dispararia — por isso checamos readyState.
+const _initBuscadorPage = () => {
   const buscador = document.getElementById("buscador");
   const agentforce = document.getElementById("agentforce");
   const resultsSection = document.getElementById("results-section");
@@ -4185,7 +4187,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   } catch (_2) {
   }
-});
+};
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", _initBuscadorPage);
+} else {
+  _initBuscadorPage();
+}
 export {
   PtBuscadorAgentforce,
   PtBuscadorCampo,
