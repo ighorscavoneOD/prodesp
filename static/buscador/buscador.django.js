@@ -658,7 +658,6 @@ const _PtBuscadorCampo = class _PtBuscadorCampo extends i$1 {
                             data-id="search-input"
                             placeholder=${this.placeholder}
                             aria-label="Campo de busca"
-                            @input=${this._handleInput}
                             @keydown=${this._handleKeyDown} />
                         <button class="buscador-search-btn" type="button" data-id="search-btn" aria-label="Buscar"
                             @click=${this._doSearch}>
@@ -1025,14 +1024,6 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
       detail: { searchTerm: this._searchTermValue }
     }));
   }
-  handleNaoEncontrei() {
-   this._sendFeedback(null, 'NOT_FOUND', this._searchTermValue);
-    this.dispatchEvent(new CustomEvent("notfound", {
-      bubbles: true,
-      composed: true,
-      detail: { searchTerm: this._searchTermValue }
-    }));
-  }
   _sendFeedback(feedbackId, action, text = null) {
     const feedback = FEEDBACK_MAP[action];
     if (!feedback) return;
@@ -1227,20 +1218,6 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
 
                 ` : this._hasNoResults ? b$1`
                     <div class="buscador-search-results" data-results-anchor data-id="results-empty">
-                        /*asdas
-                        <div class="buscador-feedback-banner" data-id="feedback-banner" role="region" aria-label="Feedback de pesquisa">
-                            <span class="buscador-feedback-question">Encontrou o que procurava?</span>
-                            <div class="buscador-feedback-actions">
-                                <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
-                                    ${this._thumbsUpSvg}
-                                    asd1//Sim, encontrei
-                                </button>
-                                <button class="buscador-btn-feedback buscador-btn-feedback--filled" data-id="btn-nao-encontrei" type="button" @click=${this.handleNaoEncontrei}>
-                                    Não encontrei
-                                    ${this._starSvgDesktop}
-                                </button>
-                            </div>
-                        </div>
                         <div class="buscador-results-count" data-id="results-count" aria-live="polite">
                             <strong class="buscador-results-number">0 resultados</strong>
                             <span class="buscador-results-suffix"> encontrados</span>
@@ -1250,21 +1227,6 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
 
                 ` : this._hasResults ? b$1`
                     <div class="buscador-search-results" data-results-anchor data-id="results-container">
-
-                        <div class="buscador-feedback-banner" data-id="feedback-banner" role="region" aria-label="Feedback de pesquisa">
-                            <span class="buscador-feedback-question">Encontrou o que procurava?</span>
-                            <div class="buscador-feedback-actions">
-                                <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
-                                    ${this._thumbsUpSvg}
-                                    asd2//Sim, encontrei
-                                </button>
-                                <button class="buscador-btn-feedback buscador-btn-feedback--filled" data-id="btn-nao-encontrei" type="button" @click=${this.handleNaoEncontrei}>
-                                    ${this._starSvgDesktop}
-                                    Não encontrei
-                                </button>
-                            </div>
-                        </div>
-
                         <div class="buscador-results-count" data-id="results-count" aria-live="polite">
                             <strong class="buscador-results-number">${this._totalResults} resultados</strong>
                             <span class="buscador-results-suffix"> encontrados</span>
@@ -1312,27 +1274,6 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
                             </nav>
                         ` : ""}
 
-                    </div>
-                ` : ""}
-
-                ${this._hasSearched && !this._isLoading ? b$1`
-                    <div class="buscador-feedback-sheet"
-                         role="region"
-                         aria-label="Feedback de pesquisa"
-                         data-id="feedback-sheet">
-                        <div class="buscador-feedback-sheet-body">
-                            <span class="buscador-feedback-question">Encontrou o que procurava?</span>
-                            <div class="buscador-feedback-actions">
-                                <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
-                                    ${this._thumbsUpSvg}
-                                    asd3//Sim, encontrei
-                                </button>
-                                <button class="buscador-btn-feedback buscador-btn-feedback--filled" type="button" @click=${this.handleNaoEncontrei}>
-                                    ${this._starSvgMobile}
-                                    Não encontrei
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 ` : ""}
 
@@ -4206,71 +4147,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!buscador || !resultsSection || !agentforceSection) return;
   buscador.searchApiUrl = "/api/services/search";
   if (agentforce) agentforce.apiBaseUrl = "/api";
-  const ANIM_MS = 380;
-  let _topPx = 0;
-  let _anchorOff = 0;
-  function measureOffsets() {
-    const mainEl = resultsSection.parentElement;
-    const mainRect = mainEl.getBoundingClientRect();
-    const busRect = buscador.getBoundingClientRect();
-    _anchorOff = buscador.getAnchorOffsetTop ? buscador.getAnchorOffsetTop() : 0;
-    _topPx = Math.round(busRect.top - mainRect.top + _anchorOff);
-  }
-  function showResults() {
-    const isAgentforceVisible = agentforceSection.classList.contains("af-active") || agentforceSection.classList.contains("af-overlap");
-    if (isAgentforceVisible) {
-      const naturalTop = agentforceSection.offsetTop;
-      agentforceSection.classList.remove("af-active", "af-reveal-down");
-      agentforceSection.style.top = `${naturalTop}px`;
-      agentforceSection.classList.add("af-overlap", "af-wipe-up");
-    }
-    resultsSection.classList.remove("rs-hidden", "rs-wipe-down");
-    resultsSection.classList.add("rs-reveal-up");
-    setTimeout(() => {
-      if (isAgentforceVisible) {
-        agentforceSection.classList.remove("af-overlap", "af-wipe-up");
-        agentforceSection.style.top = "";
-        agentforceSection.style.paddingTop = "";
-      }
-      resultsSection.classList.remove("rs-reveal-up");
-    }, ANIM_MS);
-  }
-  function showChat(term) {
-    measureOffsets();
-    resultsSection.classList.remove("rs-reveal-up");
-    resultsSection.classList.add("rs-wipe-down");
-    agentforceSection.style.top = `${_topPx}px`;
-    agentforceSection.classList.add("af-overlap", "af-reveal-down");
-    if (agentforce) {
-      agentforce.searchTerm = "";
-      requestAnimationFrame(() => {
-        agentforce.searchTerm = term;
-      });
-    }
-    setTimeout(() => {
-      resultsSection.classList.remove("rs-wipe-down");
-      resultsSection.classList.add("rs-hidden");
-      agentforceSection.classList.remove("af-overlap", "af-reveal-down");
-      agentforceSection.classList.add("af-active");
-      agentforceSection.style.top = "";
-      agentforceSection.style.paddingTop = `${_anchorOff}px`;
-    }, ANIM_MS);
-  }
+  // A conversa com o Agentforce agora é exibida em toda busca, acima dos
+  // resultados, em vez de substituí-los (fluxo antigo do botão "Não encontrei").
   document.addEventListener("buscador-search", (e2) => {
     var _a2;
     const term = (_a2 = e2.detail) == null ? void 0 : _a2.term;
     if (!term) return;
-    showResults();
+    agentforceSection.classList.remove("af-overlap", "af-reveal-down", "af-wipe-up");
+    agentforceSection.classList.add("af-active");
+    agentforceSection.style.top = "";
+    agentforceSection.style.paddingTop = "";
+    resultsSection.classList.remove("rs-hidden", "rs-wipe-down", "rs-reveal-up");
     buscador.searchTerm = "";
+    if (agentforce) agentforce.searchTerm = "";
     requestAnimationFrame(() => {
       buscador.searchTerm = term;
+      if (agentforce) agentforce.searchTerm = term;
     });
   });
-  document.addEventListener("notfound", (e2) => {
-    var _a2;
-    showChat(((_a2 = e2.detail) == null ? void 0 : _a2.searchTerm) || "");
+  document.addEventListener("chatclose", () => {
+    agentforceSection.classList.remove("af-active");
   });
-  document.addEventListener("chatclose", () => showResults());
   try {
     const raw = new URLSearchParams(window.location.search).get("q") || "";
     const term = raw.replace(/<[^>]*>/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").trim().slice(0, 200);
