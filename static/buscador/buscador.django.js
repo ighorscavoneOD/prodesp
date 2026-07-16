@@ -637,6 +637,8 @@ const _PtBuscadorCampo = class _PtBuscadorCampo extends i$1 {
   }
   // ─── Private ──────────────────────────────────────────────────────────────
   _doSearch() {
+    const input = this.querySelector(".buscador-search-input");
+    if (input) this._inputValue = input.value;
     const term = this._inputValue.trim();
     if (!term) return;
     this.dispatchEvent(new CustomEvent("buscador-search", {
@@ -658,6 +660,7 @@ const _PtBuscadorCampo = class _PtBuscadorCampo extends i$1 {
                             data-id="search-input"
                             placeholder=${this.placeholder}
                             aria-label="Campo de busca"
+                            @input=${this._handleInput}
                             @keydown=${this._handleKeyDown} />
                         <button class="buscador-search-btn" type="button" data-id="search-btn" aria-label="Buscar"
                             @click=${this._doSearch}>
