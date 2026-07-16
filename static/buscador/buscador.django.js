@@ -1227,12 +1227,13 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
 
                 ` : this._hasNoResults ? b$1`
                     <div class="buscador-search-results" data-results-anchor data-id="results-empty">
+                        /*asdas
                         <div class="buscador-feedback-banner" data-id="feedback-banner" role="region" aria-label="Feedback de pesquisa">
                             <span class="buscador-feedback-question">Encontrou o que procurava?</span>
                             <div class="buscador-feedback-actions">
                                 <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
                                     ${this._thumbsUpSvg}
-                                    Sim, encontrei
+                                    asd1//Sim, encontrei
                                 </button>
                                 <button class="buscador-btn-feedback buscador-btn-feedback--filled" data-id="btn-nao-encontrei" type="button" @click=${this.handleNaoEncontrei}>
                                     Não encontrei
@@ -1255,7 +1256,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
                             <div class="buscador-feedback-actions">
                                 <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
                                     ${this._thumbsUpSvg}
-                                    Sim, encontrei
+                                    asd2//Sim, encontrei
                                 </button>
                                 <button class="buscador-btn-feedback buscador-btn-feedback--filled" data-id="btn-nao-encontrei" type="button" @click=${this.handleNaoEncontrei}>
                                     ${this._starSvgDesktop}
@@ -1324,7 +1325,7 @@ const _PtBuscadorIndicePesquisa = class _PtBuscadorIndicePesquisa extends i$1 {
                             <div class="buscador-feedback-actions">
                                 <button class=${this._simEncontreiFeedback ? "buscador-btn-feedback buscador-btn-feedback--confirmed" : "buscador-btn-feedback buscador-btn-feedback--outlined"} type="button" @click=${this.handleSimEncontrei}>
                                     ${this._thumbsUpSvg}
-                                    Sim, encontrei
+                                    asd3//Sim, encontrei
                                 </button>
                                 <button class="buscador-btn-feedback buscador-btn-feedback--filled" type="button" @click=${this.handleNaoEncontrei}>
                                     ${this._starSvgMobile}
