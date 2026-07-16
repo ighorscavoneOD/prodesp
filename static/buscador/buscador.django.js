@@ -4152,6 +4152,11 @@ const _initBuscadorPage = () => {
   if (!buscador || !resultsSection || !agentforceSection) return;
   buscador.searchApiUrl = "/api/services/search";
   if (agentforce) agentforce.apiBaseUrl = "/api";
+  // Garante a ordem visual: sugestões de busca -> chat Agentforce -> resultados,
+  // independentemente da ordem das seções no HTML da página hospedeira.
+  if (agentforceSection.nextElementSibling !== resultsSection) {
+    resultsSection.parentNode.insertBefore(agentforceSection, resultsSection);
+  }
   // A conversa com o Agentforce agora é exibida em toda busca, acima dos
   // resultados, em vez de substituí-los (fluxo antigo do botão "Não encontrei").
   document.addEventListener("buscador-search", (e2) => {
