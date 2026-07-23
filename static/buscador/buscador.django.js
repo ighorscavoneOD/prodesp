@@ -3012,6 +3012,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
       const query = this._formatSensitiveData(value.trim());
       this._searchQuery = query;
       this._hasStartedConversation = true;
+      this._isExpanded = false;
       this._addMessage(query, "user");
       this._isLoading = true;
       this.updateComplete.then(() => this._handleSearch());
