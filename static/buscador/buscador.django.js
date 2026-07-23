@@ -2994,6 +2994,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this._followUpQuery = "";
     this._relatedQuestions = [];
     this._showCopiedToast = false;
+    this._isExpanded = false;
   }
   // ─── Light DOM ────────────────────────────────────────────────────────────
   createRenderRoot() {
@@ -3025,6 +3026,12 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
   }
   get _hasRelatedQuestions() {
     return this._relatedQuestions.length > 0;
+  }
+  get _lastAgentMessage() {
+    for (let i3 = this._messages.length - 1; i3 >= 0; i3--) {
+      if (this._messages[i3].isAgent) return this._messages[i3];
+    }
+    return null;
   }
   // ─── Lifecycle ────────────────────────────────────────────────────────────
   updated() {
@@ -3062,6 +3069,11 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
       this._isLoading = false;
       this._shouldFocusFollowUp = true;
     }
+  }
+  handleExpandConversation() {
+    this._isExpanded = true;
+    this._shouldFocusFollowUp = true;
+    this._scrollDown();
   }
   handleClose() {
     if (this._sessionId) this._endAgentSession();
@@ -3264,6 +3276,7 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
     this._msgCounter = 0;
     this._hasStartedConversation = false;
     this._showCopiedToast = false;
+    this._isExpanded = false;
   }
   _formatSensitiveData(term) {
     if (!term) return term;
@@ -3394,9 +3407,9 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
                             </svg>
                             Modo IA
                         </span>
-                        <span class="buscador-chatbox-title">Assistente Poupatempo</span>
+                        <span class="buscador-chatbox-title">Resposta gerada por Agentforce Poupatempo</span>
                     </div>
-                    ${this._hasStartedConversation ? b$1`
+                    ${this._hasStartedConversation && this._isExpanded ? b$1`
                         <div class="buscador-header-actions">
                             <button class="buscador-close-btn" data-id="chatbox-close-btn" type="button" @click=${this.handleClose}
                                 ?disabled=${this._isLoading} title="Fechar conversa" aria-label="Fechar">
@@ -3408,7 +3421,24 @@ const _PtBuscadorAgentforce = class _PtBuscadorAgentforce extends i$1 {
                     ` : ""}
                 </div>
 
-                ${this._hasStartedConversation ? b$1`
+                ${this._hasStartedConversation && !this._isExpanded ? b$1`
+                    <div class="buscador-collapsed" data-id="chatbox-collapsed">
+                        ${this._isLoading ? b$1`
+                            <span class="buscador-generating-label" role="status" aria-label="Gerando resposta">Gerando resposta</span>
+                        ` : this._lastAgentMessage ? b$1`
+                            <div class="buscador-msg-card-text buscador-collapsed-text">${o(g.parse(this._lastAgentMessage.text))}</div>
+                            <button class="buscador-continue-btn" data-id="chatbox-continue-btn" type="button"
+                                @click=${this.handleExpandConversation} aria-expanded="false">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                                Continuar conversa
+                            </button>
+                        ` : ""}
+                    </div>
+                ` : ""}
+
+                ${this._hasStartedConversation && this._isExpanded ? b$1`
                     <div class="buscador-chatbox-messages" data-id="chatbox-messages" role="log" aria-live="polite">
                         ${this._messages.map((msg) => b$1`
                             <div class=${msg.wrapperClass}>
@@ -4024,6 +4054,37 @@ __publicField(_PtBuscadorAgentforce, "styles", [rawlineFont, i$4`
 
         .buscador-related-pill:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* ── Estado recolhido (resumo + Continuar conversa) ── */
+        .buscador-collapsed {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);        /* 16px */
+            padding: var(--space-3) var(--space-4); /* 24px 32px */
+        }
+
+        .buscador-collapsed-text { color: var(--color-n800); }
+
+        .buscador-continue-btn {
+            align-self: center;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);        /* 8px */
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-pill);
+            padding: var(--space-1) var(--space-2); /* 8px 16px */
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 20px;
+            color: var(--color-primary);
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .buscador-continue-btn:hover { background-color: rgba(0,0,0,0.06); }
+        .buscador-continue-btn svg { display: block; flex-shrink: 0; }
+
         /* ── Scrollbar ── */
         .buscador-chatbox-messages::-webkit-scrollbar { width: 6px; }
         .buscador-chatbox-messages::-webkit-scrollbar-track { background: transparent; }
@@ -4092,6 +4153,10 @@ __publicField(_PtBuscadorAgentforce, "styles", [rawlineFont, i$4`
 
             .buscador-chatbox-input { font-size: 0.875rem; }
             .buscador-chatbox-send-btn { font-size: 0.875rem; padding: var(--space-1) var(--space-2); }
+
+            .buscador-collapsed { padding: var(--space-2); gap: var(--space-1); }
+            .buscador-collapsed-text { font-size: 0.875rem; line-height: 20.3px; }
+            .buscador-continue-btn { font-size: 0.875rem; }
         }
 
         /* ── Alto contraste (Windows HC / forced-colors) ── */
@@ -4138,7 +4203,8 @@ __publicField(_PtBuscadorAgentforce, "properties", {
   _hasStartedConversation: { state: true },
   _followUpQuery: { state: true },
   _relatedQuestions: { state: true },
-  _showCopiedToast: { state: true }
+  _showCopiedToast: { state: true },
+  _isExpanded: { state: true }
 });
 let PtBuscadorAgentforce = _PtBuscadorAgentforce;
 customElements.define("pt-buscador-agentforce", PtBuscadorAgentforce);
